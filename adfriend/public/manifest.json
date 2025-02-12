@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "AdFriend",
+  "version": "1.0.0",
+  "description": "A chrome extension for the OGs",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": []
+}
