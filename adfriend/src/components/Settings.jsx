@@ -25,7 +25,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="flex flex-col items-center mt-6">
+    <div className="flex flex-col items-center">
       <h2 className="text-lg font-bold text-white">Select the categories of ads to see:</h2>
 
       {/* Category Selection Buttons */}
@@ -34,7 +34,7 @@ export default function Settings() {
           <button
             key={category}
             onClick={() => toggleCategory(category)}
-            className={`px-4 py-2 rounded-lg text-white border-2 transition-all transform hover:scale-105 ${
+            className={`px-4 py-2 rounded-lg text-white border-2 transition-all shadow-md transform hover:scale-105 ${
               selectedCategories.includes(category) ? colors[themeColor] : "bg-black border-white hover:bg-gray-800"
             }`}
           >
