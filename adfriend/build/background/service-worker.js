@@ -37,6 +37,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       chrome.storage.local.set({ whitelist });
     });
   }
+
+  if (message.action === 'saveAdData') {
+    const { host, blockedAds } = message;
+
+    chrome.storage.local.get('adData', ({ adData }) => {
+      adData = adData || {};
+
+      adData[host] = adData[host] || { blockedAds: 0 };
+      adData[host].blockedAds = blockedAds;
+
+      chrome.storage.local.set({ adData }, () => {
+        console.log(
+          `Saved blocked ads for ${host}: ${adData[host].blockedAds}`
+        );
+
+        chrome.runtime.sendMessage({
+          action: 'updateAdCount',
+          host: host,
+          blockedAds: adData[host].blockedAds,
+        });
+      });
+    });
+
+    return true; // Keep the response asynchronous
+  }
+
+  if (message.action === 'getAdCount') {
+    const host = message.host;
+    chrome.storage.local.get('adData', ({ adData }) => {
+      const count = adData && adData[host] ? adData[host].blockedAds : 0;
+      sendResponse({ blockedAds: count });
+    });
+    return true; // Keep the response asynchronous
+  }
 });
 
 const getImagesFromPexels = async () => {

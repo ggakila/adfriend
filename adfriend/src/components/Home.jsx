@@ -13,11 +13,16 @@ export default function Home() {
   useEffect(() => {
     chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }, (data) => {
       setIsOn(data.isOn || false);
-      setAdsBlocked(data.adsBlocked || 0);
       if (data.whitelist && currentUrl) {
         setIsWhitelisted(data.whitelist.includes(currentUrl));
       }
     });
+    chrome.runtime.sendMessage(
+      { action: 'getAdCount', host: currentUrl },
+      (response) => {
+        setAdsBlocked(response.blockedAds || 0);
+      }
+    );
   }, [currentUrl]);
 
   useEffect(() => {
@@ -25,10 +30,19 @@ export default function Home() {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs.length > 0) {
           setCurrentUrl(new URL(tabs[0].url).hostname);
+          chrome.runtime.onMessage.addListener((message) => {
+            console.log(message);
+            if (
+              message.action === 'updateAdCount' &&
+              message.host === currentUrl
+            ) {
+              setAdsBlocked(message.blockedAds);
+            }
+          });
         }
       });
     }
-  }, []);
+  }, [currentUrl]);
 
   const toggleExtension = () => {
     setIsOn((prev) => !prev);

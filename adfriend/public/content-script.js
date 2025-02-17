@@ -1,5 +1,4 @@
 //inject content script to the page
-const countOfAds = 0;
 window.addEventListener('load', async function () {
   chrome.storage.local.get('enabled', ({ enabled }) => {
     if (!enabled) return;
@@ -28,6 +27,11 @@ window.addEventListener('load', async function () {
   const all_ad_elems = Array.from(
     document.querySelectorAll(".ad-slot, .ads, [id^='!ad'], [class^='ad']")
   );
+  chrome.runtime.sendMessage({
+    action: 'saveAdData',
+    host: window.location.hostname,
+    blockedAds: all_ad_elems.length,
+  });
 
   const categoriesMap = {
     memes: memes,
