@@ -10,10 +10,9 @@ window.addEventListener('load', async function () {
     'content',
   ]);
 
-  if (
-    !settings?.enabled ||
-    settings.whitelist?.includes(window.location.hostname)
-  )
+  console.log('Settings', settings);
+
+  if (!settings?.isOn || settings.whitelist?.includes(window.location.hostname))
     return;
 
   const selectedCategories = settings.selectedCategories || [];

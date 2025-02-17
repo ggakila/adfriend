@@ -1,17 +1,14 @@
 //inject content script to the page
 window.addEventListener('load', async function () {
-  chrome.storage.local.get('enabled', ({ enabled }) => {
-    if (!enabled) return;
-    // Run ad replacement logic...
-  });
-
-  const { settings, content } = await chrome.storage.local.get([
+  const { settings, content, isOn } = await chrome.storage.local.get([
     'settings',
     'content',
+    'isOn',
   ]);
 
-  if (!settings?.isOn || settings.whitelist?.includes(window.location.hostname))
-    return;
+  console.log('Settings', settings);
+
+  if (!isOn || settings.whitelist?.includes(window.location.hostname)) return;
 
   const selectedCategories = settings.selectedCategories || [];
   const images = content.images || {};
