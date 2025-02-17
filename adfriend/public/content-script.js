@@ -58,7 +58,10 @@ window.addEventListener('load', async function () {
     if (!availableTypes.length) return;
 
     //randomly select a type from available types
-    const type = availableTypes[index % availableTypes.length].toLowerCase();
+    const type =
+      availableTypes[
+        Math.floor(Math.random() * availableTypes.length)
+      ].toLowerCase();
 
     if (
       type === 'nature' ||
