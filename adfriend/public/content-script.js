@@ -1,8 +1,11 @@
 //inject content script to the page
-console.log('content script injected');
+
+
+
 
 window.addEventListener('load', async function () {
   const { settings } = (await chrome.storage.local.get('settings')) || {};
+
   console.log(settings);
 
   const all_ad_elems = Array.from(
