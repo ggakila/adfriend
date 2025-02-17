@@ -1,27 +1,46 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 import { useState, useEffect } from "react";
 import { Power, CheckCircle, XCircle, ShieldCheck } from "lucide-react";
 import { useTheme } from "../ThemeContext";
 
 export default function Home() {
   const { themeColor } = useTheme();
-  const [isOn, setIsOn] = useState(() => JSON.parse(localStorage.getItem("isOn")) ?? true);
-  const [adsBlocked, setAdsBlocked] = useState(() => JSON.parse(localStorage.getItem("adsBlocked")) || 0);
+
+  // Load from localStorage with logs
+  const [isOn, setIsOn] = useState(() => {
+    const storedState = JSON.parse(localStorage.getItem("isOn")) ?? true;
+    console.log("Loaded isOn state:", storedState);
+    return storedState;
+  });
+
+  const [adsBlocked, setAdsBlocked] = useState(() => {
+    const storedCount = JSON.parse(localStorage.getItem("adsBlocked")) || 0;
+    console.log("Loaded adsBlocked count:", storedCount);
+    return storedCount;
+  });
+
   const [currentUrl, setCurrentUrl] = useState("");
   const [isWhitelisted, setIsWhitelisted] = useState(false);
   const [hovered, setHovered] = useState(false);
 
-  // Get current site URL
+  // Get the current active tab's URL
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCurrentUrl(window.location.hostname);
+    if (chrome.tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs.length > 0) {
+          const url = new URL(tabs[0].url).hostname;
+          setCurrentUrl(url);
+          console.log("Current active URL:", url);
+
+          // Check if the URL is in the whitelist
+          const storedWhitelist = JSON.parse(localStorage.getItem("whitelist")) || [];
+          setIsWhitelisted(storedWhitelist.includes(url));
+          console.log("Whitelist loaded:", storedWhitelist);
+        }
+      });
     }
   }, []);
-
-  // Check if the current site is in the whitelist
-  useEffect(() => {
-    const storedWhitelist = JSON.parse(localStorage.getItem("whitelist")) || [];
-    setIsWhitelisted(storedWhitelist.includes(currentUrl));
-  }, [currentUrl]);
 
   // Persist `isOn` state
   useEffect(() => {
@@ -32,6 +51,7 @@ export default function Home() {
   // Persist `adsBlocked`
   useEffect(() => {
     localStorage.setItem("adsBlocked", JSON.stringify(adsBlocked));
+    console.log("Updated adsBlocked count:", adsBlocked);
   }, [adsBlocked]);
 
   // Handle whitelisting
@@ -40,12 +60,15 @@ export default function Home() {
 
     if (isWhitelisted) {
       storedWhitelist = storedWhitelist.filter((site) => site !== currentUrl);
+      console.log(`Removed from whitelist: ${currentUrl}`);
     } else {
       storedWhitelist.push(currentUrl);
+      console.log(`Added to whitelist: ${currentUrl}`);
     }
 
     localStorage.setItem("whitelist", JSON.stringify(storedWhitelist));
     setIsWhitelisted(!isWhitelisted);
+    console.log("Updated whitelist:", storedWhitelist);
   };
 
   return (

@@ -4,7 +4,7 @@
 const settings = {
   enabled: true,
   disabledSites: [],
-  adsLimit: 4,
+  adsLimit: 50,
   colorThemes: 'purplish',
 };
 
