@@ -4,12 +4,6 @@ const jsonFilePath = 'content.json';
 const updateInterval = 60 * 60 * 1000;
 
 //save settings on local storage
-const settings = {
-  enabled: true,
-  disabledSites: [],
-  adsLimit: 50,
-  colorThemes: 'purplish',
-};
 
 const getImagesFromPexels = async () => {
   const promises = categories.map(async (category) => {
@@ -21,7 +15,7 @@ const getImagesFromPexels = async () => {
     );
 
     const { photos } = await response.json();
-    return { [category]: photos.map((photo) => photo.src.large) };
+    return { [category]: photos.map((photo) => photo.src.medium) };
   });
 
   const images = await Promise.all(promises);
@@ -29,9 +23,9 @@ const getImagesFromPexels = async () => {
 };
 
 const updateJsonFile = async () => {
-  const images = await getImagesFromPexels();
-
   try {
+    const images = await getImagesFromPexels();
+
     const response = await fetch(chrome.runtime.getURL(jsonFilePath));
     const content = await response.json();
 
