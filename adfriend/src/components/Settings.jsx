@@ -7,7 +7,7 @@ export default function Settings() {
   const [settings, setSettings] = useState({
     enabled: true,
     disabledSites: [],
-    selectedCategories: ['Textures'],
+    selectedCategories: [],
     adsLimit: 'No Limit',
     colorThemes: 'purple',
   });
