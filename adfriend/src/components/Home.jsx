@@ -6,23 +6,23 @@ import { useTheme } from "../ThemeContext";
 
 export default function Home() {
   const { themeColor } = useTheme();
-
-  // Load from localStorage with logs
-  const [isOn, setIsOn] = useState(() => {
-    const storedState = JSON.parse(localStorage.getItem("isOn")) ?? true;
-    console.log("Loaded isOn state:", storedState);
-    return storedState;
-  });
-
-  const [adsBlocked, setAdsBlocked] = useState(() => {
-    const storedCount = JSON.parse(localStorage.getItem("adsBlocked")) || 0;
-    console.log("Loaded adsBlocked count:", storedCount);
-    return storedCount;
-  });
-
+  const [isOn, setIsOn] = useState(true);
+  const [adsBlocked, setAdsBlocked] = useState(0);
   const [currentUrl, setCurrentUrl] = useState("");
   const [isWhitelisted, setIsWhitelisted] = useState(false);
   const [hovered, setHovered] = useState(false);
+
+  // Load settings from chrome.storage.local
+  useEffect(() => {
+    chrome.storage.local.get(["isOn", "adsBlocked", "whitelist"], (data) => {
+      if (data.isOn !== undefined) setIsOn(data.isOn);
+      if (data.adsBlocked !== undefined) setAdsBlocked(data.adsBlocked);
+      if (data.whitelist && currentUrl) {
+        setIsWhitelisted(data.whitelist.includes(currentUrl));
+      }
+      console.log("Loaded settings:", data);
+    });
+  }, [currentUrl]);
 
   // Get the current active tab's URL
   useEffect(() => {
@@ -31,67 +31,62 @@ export default function Home() {
         if (tabs.length > 0) {
           const url = new URL(tabs[0].url).hostname;
           setCurrentUrl(url);
-          console.log("Current active URL:", url);
-
-          // Check if the URL is in the whitelist
-          const storedWhitelist = JSON.parse(localStorage.getItem("whitelist")) || [];
-          setIsWhitelisted(storedWhitelist.includes(url));
-          console.log("Whitelist loaded:", storedWhitelist);
         }
       });
     }
   }, []);
 
-  // Persist `isOn` state
+  // Save `isOn` state
   useEffect(() => {
-    localStorage.setItem("isOn", JSON.stringify(isOn));
+    chrome.storage.local.set({ isOn });
     console.log(`AdFriend is ${isOn ? "ON" : "OFF"}`);
   }, [isOn]);
 
-  // Persist `adsBlocked`
+  // Save `adsBlocked` state
   useEffect(() => {
-    localStorage.setItem("adsBlocked", JSON.stringify(adsBlocked));
+    chrome.storage.local.set({ adsBlocked });
     console.log("Updated adsBlocked count:", adsBlocked);
   }, [adsBlocked]);
 
   // Handle whitelisting
   const toggleWhitelist = () => {
-    let storedWhitelist = JSON.parse(localStorage.getItem("whitelist")) || [];
+    chrome.storage.local.get("whitelist", (data) => {
+      let whitelist = data.whitelist || [];
 
-    if (isWhitelisted) {
-      storedWhitelist = storedWhitelist.filter((site) => site !== currentUrl);
-      console.log(`Removed from whitelist: ${currentUrl}`);
-    } else {
-      storedWhitelist.push(currentUrl);
-      console.log(`Added to whitelist: ${currentUrl}`);
-    }
+      if (isWhitelisted) {
+        whitelist = whitelist.filter((site) => site !== currentUrl);
+        console.log(`Removed from whitelist: ${currentUrl}`);
+      } else {
+        whitelist.push(currentUrl);
+        console.log(`Added to whitelist: ${currentUrl}`);
+      }
 
-    localStorage.setItem("whitelist", JSON.stringify(storedWhitelist));
-    setIsWhitelisted(!isWhitelisted);
-    console.log("Updated whitelist:", storedWhitelist);
+      chrome.storage.local.set({ whitelist });
+      setIsWhitelisted(!isWhitelisted);
+      console.log("Updated whitelist:", whitelist);
+    });
   };
 
   return (
     <div className="absolute inset-0 flex flex-col gap-10 justify-center items-center p-8">
       <div className="flex flex-col items-center justify-center">
+        {/* Glowing Effect */}
+        {isOn && <div className={`w-48 h-48 rounded-full bg-${themeColor}-500 opacity-30 animate-pulse absolute blur-3xl`}></div>}
 
-      {/* Glowing Effect */}
-      {isOn && <div className={`w-48 h-48 rounded-full bg-${themeColor}-500 opacity-30 animate-pulse absolute blur-3xl`}></div>}
+        {/* AF Text */}
+        <h1 className="text-6xl font-bold text-white relative z-10 font-['Ruslan_Display']">AF</h1>
+        <p className="text-lg text-gray-300 relative z-10">AdFriend</p>
 
-      {/* AF Text */}
-      <h1 className="text-6xl font-bold text-white relative z-10 font-['Ruslan_Display']">AF</h1>
-      <p className="text-lg text-gray-300 relative z-10">AdFriend</p>
-
-      {/* Power Button */}
-      <button
-        onClick={() => setIsOn((prev) => !prev)}
-        className={`relative z-10 mt-6 flex items-center justify-center w-16 h-16 rounded-full border-2 border-white transition-all ${
-          isOn ? `${themeColor}-500 text-white shadow-lg shadow-${themeColor}-500` : "bg-black text-gray-400"
-        }`}
+        {/* Power Button */}
+        <button
+          onClick={() => setIsOn((prev) => !prev)}
+          className={`relative z-10 mt-6 flex items-center justify-center w-16 h-16 rounded-full border-2 border-white transition-all ${
+            isOn ? `${themeColor}-500 text-white shadow-lg shadow-${themeColor}-500` : "bg-black text-gray-400"
+          }`}
         >
-        <Power size={32} />
-      </button>
-        </div>
+          <Power size={32} />
+        </button>
+      </div>
 
       {/* Whitelist Button */}
       <button
