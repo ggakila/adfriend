@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "jokes": [
       {
@@ -256,4 +257,242 @@
     }
 
 }
+=======
+{
+    "jokes": [
+      {
+        "id": 1,
+        "question": "What do you call a bear with no teeth?",
+        "answer": "A gummy bear!"
+      },
+      {
+        "id": 2,
+        "question": "Why don’t skeletons fight each other?",
+        "answer": "They don’t have the guts!"
+      },
+      {
+        "id": 3,
+        "question": "Why did the scarecrow win an award?",
+        "answer": "Because he was outstanding in his field!"
+      },
+      {
+        "id": 4,
+        "question": "Why do cows have hooves instead of feet?",
+        "answer": "Because they lactose!"
+      },
+      {
+        "id": 5,
+        "question": "What did one wall say to the other wall?",
+        "answer": "I'll meet you at the corner!"
+      },
+      {
+        "id": 6,
+        "question": "Why did the bicycle fall over?",
+        "answer": "Because it was two-tired!"
+      },
+      {
+        "id": 7,
+        "question": "Why don’t eggs tell jokes?",
+        "answer": "Because they might crack up!"
+      },
+      {
+        "id": 8,
+        "question": "Why did the math book look sad?",
+        "answer": "Because it had too many problems!"
+      },
+      {
+        "id": 9,
+        "question": "Why did the golfer bring two pairs of pants?",
+        "answer": "In case he got a hole in one!"
+      },
+      {
+        "id": 10,
+        "question": "Why can't you give Elsa a balloon?",
+        "answer": "Because she will let it go!"
+      },
+      {
+        "id": 11,
+        "question": "What do you call a fish wearing a bowtie?",
+        "answer": "Sofishticated!"
+      },
+      {
+        "id": 12,
+        "question": "Why don’t some couples go to the gym?",
+        "answer": "Because some relationships don’t work out!"
+      },
+      {
+        "id": 13,
+        "question": "What did one ocean say to the other ocean?",
+        "answer": "Nothing, they just waved!"
+      },
+      {
+        "id": 14,
+        "question": "Why did the tomato turn red?",
+        "answer": "Because it saw the salad dressing!"
+      },
+      {
+        "id": 15,
+        "question": "How do you make a tissue dance?",
+        "answer": "You put a little boogie in it!"
+      }
+    ],
+
+    "quotes": [
+        {
+        "id": 1,
+        "quote": "The only way to do great work is to love what you do.",
+        "author": "Steve Jobs"
+        },
+        {
+        "id": 2,
+        "quote": "It does not matter how slowly you go as long as you do not stop.",
+        "author": "Confucius"
+        },
+        {
+        "id": 3,
+        "quote": "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+        "author": "Winston Churchill"
+        },
+        {
+        "id": 4,
+        "quote": "Believe you can and you're halfway there.",
+        "author": "Theodore Roosevelt"
+        },
+        {
+        "id": 5,
+        "quote": "The best time to plant a tree was 20 years ago. The second best time is now.",
+        "author": "Chinese Proverb"
+        },
+        {
+        "id": 6,
+        "quote": "Opportunities don't happen. You create them.",
+        "author": "Chris Grosser"
+        },
+        {
+        "id": 7,
+        "quote": "Hardships often prepare ordinary people for an extraordinary destiny.",
+        "author": "C.S. Lewis"
+        },
+        {
+        "id": 8,
+        "quote": "You miss 100% of the shots you don’t take.",
+        "author": "Wayne Gretzky"
+        },
+        {
+        "id": 9,
+        "quote": "Do what you can, with what you have, where you are.",
+        "author": "Theodore Roosevelt"
+        },
+        {
+        "id": 10,
+        "quote": "The only limit to our realization of tomorrow is our doubts of today.",
+        "author": "Franklin D. Roosevelt"
+        },
+        {
+        "id": 11,
+        "quote": "Act as if what you do makes a difference. It does.",
+        "author": "William James"
+        },
+        {
+        "id": 12,
+        "quote": "Don't watch the clock; do what it does. Keep going.",
+        "author": "Sam Levenson"
+        },
+        {
+        "id": 13,
+        "quote": "It always seems impossible until it's done.",
+        "author": "Nelson Mandela"
+        },
+        {
+        "id": 14,
+        "quote": "Everything you’ve ever wanted is on the other side of fear.",
+        "author": "George Addair"
+        },
+        {
+        "id": 15,
+        "quote": "Difficulties in life are intended to make us better, not bitter.",
+        "author": "Dan Reeves"
+        }
+    ],
+
+    
+    "memes": [
+        {
+        "id": 1,
+        "url": "https://api.memegen.link/images/ds/Brace_yourselves/Memes_are_coming.png"
+        },
+        {
+        "id": 2,
+        "url": "https://api.memegen.link/images/seagull/When_you_realize/You_forgot_to_save.png"
+        },
+        {
+        "id": 3,
+        "url": "https://api.memegen.link/images/oprah/no_more/intrusive_ads.gif"
+        },
+        {
+        "id": 4,
+        "url": "https://api.memegen.link/images/disastergirl/This_is_fine.png"
+        },
+        {
+        "id": 5,
+        "url": "https://api.memegen.link/images/rollsafe/When_you_have_a_really_good_idea.webp?layout=top"
+        },
+        {
+        "id": 6,
+        "url": "https://api.memegen.link/images/rollsafe/You_can't_have_ads/If_you_have_adfriend.png"
+        },
+        {
+        "id": 7,
+        "url": "https://api.memegen.link/images/pigeon/Engineer/_/Is_this_Photoshop~q.png?style=https://i.imgur.com/W0NXFpQ.png"
+        },
+        {
+        "id": 8,
+        "url": "https://api.memegen.link/images/facepalm/When_you_forget_to_use_adfriend.png"
+        },
+        {
+        "id": 9,
+        "url": "https://api.memegen.link/images/fry/Not_sure_if_ad_or_article.png"
+        },
+        {
+        "id": 10,
+        "url": "https://api.memegen.link/images/jim/I_use_adfriend/And_I'm_happy.png"
+        },
+        {
+        "id": 11,
+        "url": "https://api.memegen.link/images/success/Blocked_ad/Nice.png"
+        },
+        {
+        "id": 12,
+        "url": "https://api.memegen.link/images/millers/_/why_is_this_ad_more_than_5secs~q/You_only_watch_one_ad~q/People_watch_ads~q.png"
+        },
+        {
+        "id": 13,
+        "url": "https://api.memegen.link/images/drake/Blocking_ads/Watching_ads.png"
+        },
+        {
+        "id": 14,
+        "url": "https://api.memegen.link/images/tenguy/Adblock_installed/No_more_ads.png"
+        },
+        {
+        "id": 15,
+        "url": "https://api.memegen.link/images/oprah/You_get_adfriend/You_get_a_friend.png"
+        }
+    ],
+
+    "textures": [
+        {
+        "id": 1,
+        "svg": ""
+        }
+    ]
+     
+    
+      
+    
+      
+
+
+
+}
+>>>>>>> e5d845f1688325bff91f6792d5308b510d046548
   
