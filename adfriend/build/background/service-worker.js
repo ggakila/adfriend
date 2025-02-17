@@ -1,10 +1,12 @@
-// src/service-worker.js (continue from previous code)
+const APIKEY = 'iqvtMNgYEqzk18SBwBs8ekZ5NsTxQ8H8kEzqhybZdWGVgCqK3IUapjCS';
+const categories = ['nature', 'art', 'landscape', 'cars', 'animals'];
+const jsonFilePath = 'content.json';
 
 //save settings on local storage
 const settings = {
   enabled: true,
   disabledSites: [],
-  adsLimit: 4,
+  adsLimit: 50,
   colorThemes: 'purplish',
 };
 
@@ -35,123 +37,36 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 
-// src/service-worker.js
+const getImagesFromPexels = async () => {
+  const promises = categories.map(async (category) => {
+    const response = await fetch(
+      `https://api.pexels.com/v1/search?query=${category}&per_page=10`,
+      {
+        headers: { Authorization: `${APIKEY}` },
+      }
+    );
+    console.log(response);
+    const { photos } = await response.json();
+    return { [category]: photos.map((photo) => photo.src.large) };
+  });
 
-async function loadAndConvertEasyList() {
+  const images = await Promise.all(promises);
+  return images.reduce((acc, obj) => Object.assign(acc, obj), {});
+};
+
+const updateJsonFile = async () => {
+  const images = await getImagesFromPexels();
+
   try {
-    const maxRulesToLoad = 4000; // Set your limit here
-    let rulesLoadedCount = 0;
+    const response = await fetch(chrome.runtime.getURL(jsonFilePath));
+    const content = await response.json();
 
-    const response = await fetch('/easylist.txt'); // Fetch from the root of the build (public folder content)
-    if (!response.ok) {
-      console.error(
-        'Failed to fetch EasyList:',
-        response.status,
-        response.statusText
-      );
-      return [];
-    }
-    const text = await response.text();
-    const lines = text.split('\n');
-    const rules = [];
-    let ruleIdCounter = 1; // Unique IDs for rules are required
+    content.images = images;
 
-    for (const line of lines) {
-      const trimmedLine = line.trim();
-
-      // Skip comments and empty lines
-      if (trimmedLine.startsWith('!') || trimmedLine === '') {
-        continue;
-      }
-
-      let rule = null;
-      if (trimmedLine.startsWith('-') || trimmedLine.startsWith('||')) {
-        const filterRule = trimmedLine.startsWith('-')
-          ? trimmedLine.substring(1)
-          : trimmedLine.substring(2); // Remove leading - or ||
-
-        // Basic rule parsing - you'll need to expand this for more complex rules
-        let urlFilter = filterRule.split('$')[0]; // Basic URL filter part
-        let optionsPart = filterRule.split('$')[1] || ''; // Options part (like domain, resource type)
-        let resourceTypes = [
-          'main_frame',
-          'sub_frame',
-          'stylesheet',
-          'script',
-          'image',
-          'media',
-          'font',
-          'object',
-          'xmlhttprequest',
-          'ping',
-          'csp_report',
-          'websocket',
-          'other',
-        ]; // Block all by default unless whitelisted
-
-        let domainFilter = null;
-        let excludedDomains = null;
-
-        if (optionsPart) {
-          const options = optionsPart.split(',');
-          for (const option of options) {
-            if (option.startsWith('domain=')) {
-              const domains = option.substring(7).split('|'); // e.g., domain=example.com,~blocked.com
-              domainFilter = [];
-              excludedDomains = [];
-              for (const domain of domains) {
-                if (domain.startsWith('~')) {
-                  excludedDomains.push(domain.substring(1));
-                } else {
-                  domainFilter.push(domain);
-                }
-              }
-            } else if (option.startsWith('~')) {
-              // Exclude resource types (e.g., ~image)
-              const excludedType = option.substring(1);
-              resourceTypes = resourceTypes.filter(
-                (type) => type !== excludedType
-              );
-            } else if (resourceTypes.includes(option)) {
-              // Include specific resource types (e.g., image)
-              resourceTypes = [option]; // If specific type included, only block that type
-            }
-          }
-        }
-
-        rule = {
-          id: ruleIdCounter++,
-          priority: 1, // Adjust priority as needed
-          action: { type: 'block' },
-          condition: {
-            urlFilter: urlFilter + '*', // Basic wildcard matching - adjust as needed for EasyList syntax
-            resourceTypes: resourceTypes,
-          },
-        };
-        if (domainFilter && domainFilter.length > 0) {
-          rule.condition.domains = domainFilter;
-        }
-        if (excludedDomains && excludedDomains.length > 0) {
-          rule.condition.domains = excludedDomains;
-        }
-      }
-
-      if (rule) {
-        if (rulesLoadedCount < maxRulesToLoad) {
-          // Check the limit
-          rules.push(rule);
-          rulesLoadedCount++;
-        } else {
-          console.warn(
-            `EasyList rule limit of ${maxRulesToLoad} reached.  Stopping rule loading.`
-          );
-          break; // Stop loading more rules
-        }
-      }
-    }
-    return rules;
+    await chrome.storage.local.set({ content });
   } catch (error) {
-    console.error('Error loading or parsing EasyList:', error);
-    return [];
+    console.error('Error updating JSON file:', error);
   }
-}
+};
+
+updateJsonFile();
