@@ -73,6 +73,8 @@ export default function Home() {
 
   return (
     <div className="absolute inset-0 flex flex-col gap-10 justify-center items-center p-8">
+      <div className="flex flex-col items-center justify-center">
+
       {/* Glowing Effect */}
       {isOn && <div className={`w-48 h-48 rounded-full bg-${themeColor}-500 opacity-30 animate-pulse absolute blur-3xl`}></div>}
 
@@ -86,9 +88,10 @@ export default function Home() {
         className={`relative z-10 mt-6 flex items-center justify-center w-16 h-16 rounded-full border-2 border-white transition-all ${
           isOn ? `${themeColor}-500 text-white shadow-lg shadow-${themeColor}-500` : "bg-black text-gray-400"
         }`}
-      >
+        >
         <Power size={32} />
       </button>
+        </div>
 
       {/* Whitelist Button */}
       <button
