@@ -1,6 +1,11 @@
 //inject content script to the page
-
+const countOfAds = 0;
 window.addEventListener('load', async function () {
+  chrome.storage.local.get('enabled', ({ enabled }) => {
+    if (!enabled) return;
+    // Run ad replacement logic...
+  });
+
   const { settings, content } = await chrome.storage.local.get([
     'settings',
     'content',

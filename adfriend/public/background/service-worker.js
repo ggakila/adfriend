@@ -4,6 +4,40 @@ const jsonFilePath = 'content.json';
 const updateInterval = 60 * 60 * 1000;
 
 //save settings on local storage
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.local.set({
+    isOn: true,
+  });
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'GET_SETTINGS') {
+    chrome.storage.local.get(['isOn', 'adsBlocked', 'whitelist'], (data) => {
+      sendResponse(data);
+    });
+    return true; // Allows async response
+  }
+
+  if (message.type === 'TOGGLE_EXTENSION') {
+    chrome.storage.local.set({ isOn: message.isOn });
+    chrome.declarativeNetRequest.updateEnabledRulesets({
+      enableRulesetIds: message.isOn ? ['ruleset_1'] : [],
+      disableRulesetIds: message.isOn ? [] : ['ruleset_1'],
+    });
+  }
+
+  if (message.type === 'TOGGLE_WHITELIST') {
+    chrome.storage.local.get('whitelist', (data) => {
+      let whitelist = data.whitelist || [];
+      if (message.isWhitelisted) {
+        whitelist = whitelist.filter((site) => site !== message.site);
+      } else {
+        whitelist.push(message.site);
+      }
+      chrome.storage.local.set({ whitelist });
+    });
+  }
+});
 
 const getImagesFromPexels = async () => {
   const promises = categories.map(async (category) => {
